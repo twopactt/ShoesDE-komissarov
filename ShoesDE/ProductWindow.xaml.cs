@@ -5,6 +5,7 @@ using ShoesDE.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ShoesDE
 {
@@ -31,6 +32,21 @@ namespace ShoesDE
             InitializeComponent();
             LoadProducts();
             LoadData();
+            LoadUI();
+        }
+
+        private void LoadUI()
+        {
+            User user = CurrentSession.CurrentUser;
+
+            if (user == null || user.RoleId == 3)
+            {
+                AdminPanel.Visibility = Visibility.Collapsed;
+            }
+            else if (user.RoleId == 1)
+            {
+                CreateButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void LoadData()
@@ -131,6 +147,25 @@ namespace ShoesDE
                 .ToList();
 
             UpdateProducts();
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            new AddEditProductWindow(null).Show();
+            this.Close();
+        }
+
+        private void Border_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            User user = CurrentSession.CurrentUser;
+
+            if (user == null || user.RoleId != 1)
+                return;
+
+            int id = (int)(sender as Border).Tag;
+
+            new AddEditProductWindow(id).Show();
+            this.Close();
         }
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e)

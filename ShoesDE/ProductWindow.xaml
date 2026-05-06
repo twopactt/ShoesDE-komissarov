@@ -50,9 +50,10 @@
             <ItemsControl Name="ProductList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="10"
-                                Tag="{Binding Id}"
-                                Background="{Binding Background}">
+                        <Border Tag="{Binding Id}"
+                                Background="{Binding Background}"
+                                MouseDown="Border_MouseDown"
+                                Margin="10">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -125,5 +126,14 @@
                 VerticalAlignment="Center"
                 Margin="20 0"
                 Click="LogOutButton_Click"/>
+
+        <Button Name="CreateButton"
+                Content="Создать"
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="20 0"
+                Visibility="Collapsed"
+                Click="CreateButton_Click"/>
     </Grid>
 </Window>
