@@ -8,10 +8,38 @@
         Title="Продукты" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
+
+        <Grid Name="AdminPanel" 
+              HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="20 0">
+                <TextBlock Text="Поиск" />
+                <TextBox Name="SearchingTextBox"
+                         Width="200"
+                         TextChanged="SearchingTextBox_TextChanged"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="20 0">
+                <TextBlock Text="Сортировка" />
+                <ComboBox Name="SortingComboBox"
+                          Width="200"
+                          SelectionChanged="SortingComboBox_SelectionChanged"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Margin="20 0">
+                <TextBlock Text="Фильтрация" />
+                <ComboBox Name="FilteringComboBox"
+                          Width="200"
+                          SelectionChanged="FilteringComboBox_SelectionChanged"/>
+            </StackPanel>
+        </Grid>
 
         <TextBlock Name="FullUserName"
                    HorizontalAlignment="Right"
@@ -23,7 +51,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Margin="10"
-                                Tag="{Binding Id}">
+                                Tag="{Binding Id}"
+                                Background="{Binding Background}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -61,7 +90,11 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Цена: "/>
-                                        <TextBlock Text="{Binding Price}"/>
+                                        <TextBlock Text="{Binding Price, StringFormat=C2}"/>
+                                        <TextBlock Text=" "/>
+                                        <TextBlock Text="{Binding OldPrice, StringFormat=C2}"
+                                                   Foreground="Red"
+                                                   TextDecorations="Strikethrough"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Единица измерения: "/>
@@ -73,7 +106,10 @@
                                     </StackPanel>
                                 </StackPanel>
                                 <Border Grid.Column="2">
-                                    <TextBlock Text="{Binding Discount}"/>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Discount}"/>
+                                        <TextBlock Text="%"/>
+                                    </StackPanel>
                                 </Border>
                             </Grid>
                         </Border>

@@ -1,5 +1,8 @@
 ﻿using ShoesDE.DataBase;
+using ShoesDE.Helpers;
 using ShoesDE.Statics;
+using ShoesDE.ViewModels;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
@@ -8,21 +11,126 @@ namespace ShoesDE
     public partial class ProductWindow : Window
     {
         private ShoesDEEntities _db = new ShoesDEEntities();
+        private MessageHelper _mh = new MessageHelper();
+        private List<ProductViewModel> _productViewModels = new List<ProductViewModel>();
+
+        private string[] _sortingTypes = new string[]
+        {
+            "По умолчанию",
+            "По убыванию",
+            "По возрастанию"
+        };
+
+        private List<string> _filteringTypes = new List<string>()
+        {
+            "Все поставщики"
+        };
+
         public ProductWindow()
         {
             InitializeComponent();
             LoadProducts();
+            LoadData();
         }
 
-        public ProductWindow(User user)
+        private void LoadData()
         {
-            InitializeComponent();
-            LoadProducts();
+            SortingComboBox.ItemsSource = _sortingTypes;
+            SortingComboBox.SelectedIndex = 0;
+
+            var provider = _db.Provider.ToList();
+
+            foreach (var p in provider)
+                _filteringTypes.Add(p.Name);
+
+            FilteringComboBox.ItemsSource = _filteringTypes;
+            FilteringComboBox.SelectedIndex = 0;
+
+            User user = CurrentSession.CurrentUser;
+
+            if (user != null)
+                FullUserName.Text = $"{user.Surname} {user.Name} {user.Patronymic ?? ""}";
         }
 
         private void LoadProducts()
         {
-            ProductList.ItemsSource = _db.Product.ToList();
+            var products = _db.Product.ToList();
+
+            foreach (var p in products)
+            {
+                _productViewModels.Add(new ProductViewModel(p));
+            }
+
+            ProductList.ItemsSource = _productViewModels;
+        }
+
+        private void UpdateProducts()
+        {
+            ProductList.ItemsSource = _productViewModels;
+        }
+
+        private void SearchingTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            string searchingText = SearchingTextBox.Text;
+
+            _productViewModels = _db.Product
+                .Where(p =>
+                    p.Category.Name.ToLower().Contains(searchingText) ||
+                    p.Name.ToLower().Contains(searchingText) ||
+                    p.Description.ToLower().Contains(searchingText) ||
+                    p.Provider.Name.ToLower().Contains(searchingText) ||
+                    p.Producer.Name.ToLower().Contains(searchingText) ||
+                    p.Unit.Name.ToLower().Contains(searchingText)
+
+                )
+                .ToList()
+                .Select(p => new ProductViewModel(p))
+                .ToList();
+
+            UpdateProducts();
+        }
+
+        private void SortingComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            int sortingType = SortingComboBox.SelectedIndex;
+
+            if (sortingType == 0)
+            {
+                LoadProducts();
+            }
+            else if (sortingType == 1)
+            {
+                _productViewModels = _productViewModels
+                    .OrderByDescending(p => p.AmountInStock)
+                    .ToList();
+
+                UpdateProducts();
+            }
+            else if (sortingType == 2)
+            {
+                _productViewModels = _productViewModels
+                   .OrderBy(p => p.AmountInStock)
+                   .ToList();
+
+                UpdateProducts();
+            }
+        }
+
+        private void FilteringComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            string filterText = FilteringComboBox.SelectedValue.ToString();
+
+            if (filterText == "Все поставщики")
+            {
+                LoadProducts();
+                return;
+            }
+
+            _productViewModels = _productViewModels
+                .Where(p => p.Provider.Name == filterText)
+                .ToList();
+
+            UpdateProducts();
         }
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e)

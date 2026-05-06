@@ -30,7 +30,7 @@ namespace ShoesDE
             else
             {
                 CurrentSession.CurrentUser = user;
-                new ProductWindow(user).Show();
+                new ProductWindow().Show();
                 this.Close();
             }
         }
