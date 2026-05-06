@@ -17,6 +17,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Article" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="CreationDate" Type="date" Nullable="false" />
           <Property Name="DeliveryDate" Type="date" Nullable="false" />
           <Property Name="PickUpPointId" Type="int" Nullable="false" />
@@ -309,6 +310,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Article" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="DeliveryDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="PickUpPointId" Type="Int32" Nullable="false" />
@@ -620,6 +622,7 @@
             <EntityTypeMapping TypeName="ShoesDEModel.Order">
               <MappingFragment StoreEntitySet="Order">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Article" ColumnName="Article" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
                 <ScalarProperty Name="PickUpPointId" ColumnName="PickUpPointId" />

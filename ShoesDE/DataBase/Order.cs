@@ -21,6 +21,7 @@ namespace ShoesDE.DataBase
         }
     
         public int Id { get; set; }
+        public string Article { get; set; }
         public System.DateTime CreationDate { get; set; }
         public System.DateTime DeliveryDate { get; set; }
         public int PickUpPointId { get; set; }
